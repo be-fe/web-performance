@@ -1,0 +1,33 @@
+<!doctype>
+<html>
+<head></head>
+<body>
+	Hello world
+	<button onclick="exec()" class="test-btn" id="aa">执行一个操作</button>
+	<a href="#/test">hashChange</a>
+	<a href="#">back</a>
+	<script src="index.js"></script>
+	<script type="text/javascript">
+		var webPerformance = new WebPerformance({
+			name: 'Tester',
+			onEventHook: function(data) {
+				console.log(data);
+			},
+			onSlowFunc: function(data) {
+				console.log(data);
+			}
+		});
+		webPerformance.addEvents(['click', 'hashchange', 'resize']);
+
+		function exec() {
+			for (var i = 0; i < 10000000; i++) {
+				window.a = i;
+			}
+		}
+
+		window.addEventListener('hashchange', function() {
+			exec();
+		})
+	</script>
+</body>
+</html>
