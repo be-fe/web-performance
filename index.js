@@ -113,11 +113,6 @@
 		}
 	};
 
-
-	// window.addEventListener('executing', function(time) {
-	// 	this.allTime = this.allTime + time;
-	// }, false)
-
 	WebPerformance.prototype.setOptions = function () {
 		this.onSlowFunc = this.options.onSlowFunc;
 		this.onEventHook = this.options.onEventHook;
@@ -133,13 +128,21 @@
 
 	WebPerformance.prototype.init = function() {
 		var self = this;
+		function timeout() {
+			if (requestAnimationFrame) {
+				return requestAnimationFrame
+			}
+			else {
+				return setTimeout
+			}
+		}
 		function animate() {
 		    self.begin();
 		    self.end();
-		    requestAnimationFrame( animate );
+		    timeout()( animate );
 		}
-
-		requestAnimationFrame( animate );
+		timeout()( animate )
+		//setInterval( animate, 100 );
 		self.state = 'inited';
 		self.on('slowFunc', function(data) {
 			self.onSlowFunc && self.onSlowFunc(data);
