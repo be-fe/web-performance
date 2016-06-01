@@ -1,0 +1,19 @@
+{
+  "name": "webperformance",
+  "version": "0.0.1",
+  "description": "get web performance",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/be-fe/web-performance.git"
+  },
+  "author": "xieyu33333",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/be-fe/web-performance/issues"
+  },
+  "homepage": "https://github.com/be-fe/web-performance#readme"
+}
