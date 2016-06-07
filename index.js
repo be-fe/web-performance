@@ -102,7 +102,8 @@
 								name: self.name,
 								domClass: e.target.className,
 								domName: e.target.tagName,
-								domId: e.target.id
+								domId: e.target.id,
+								domEvent: e
 							});
 						}
 						window.addEventListener(eventName, eventCallback, false);
