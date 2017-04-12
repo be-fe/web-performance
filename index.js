@@ -74,60 +74,83 @@
     };
 
 
-	WebPerformance.prototype.addEvents = function(type) {
+	WebPerformance.prototype.addEachEvents = function(evts) {
 		var self = this;
-        return function (evts) {
-    		if (typeof evts === 'string') {
-    			var events = [evts] || ['hashchange'];
-    		}
-    		else if (Object.prototype.toString.call(evts) === '[object Array]') {
-    			var events = evts;
-    		}
-    		for (var i = 0; i < events.length; i++) {
-    			(function(eventName) {
-    				var eventCallback = function(e) {
-    					var e = e || window.event;
-    					var eventHookTime = 0;
-    					var timeAfterEvent = function(time) {
-    						eventHookTime = eventHookTime + time;
-    					};
-    					self.on('executing', timeAfterEvent);
-    					window.removeEventListener(eventName, eventCallback);
-    					setTimeout(function() {
-    						if (type === 'slow' && eventHookTime > self.slowStandard) {
-    							self.trigger('slowEventHook', {
-                                    type: 'slowEvent',
-    								event: eventName,
-    								time: eventHookTime,
-    								location: location.href,
-    								name: self.name,
-    								domClass: e.target.className,
-    								domName: e.target.tagName,
-    								domId: e.target.id,
-    								// domEvent: e
-    							});
-    						}
-                            else {
-                                self.trigger('eachEventHook', {
-                                    type: 'eachEvent',
-                                    event: eventName,
-                                    time: eventHookTime,
-                                    location: location.href,
-                                    name: self.name,
-                                    domClass: e.target.className,
-                                    domName: e.target.tagName,
-                                    domId: e.target.id,
-                                    // domEvent: e
-                                });
-                            }
-    						window.addEventListener(eventName, eventCallback, false);
-    					}, self.eventTimeout);
-    				}
-    				window.addEventListener(eventName, eventCallback, false);
-    			})(events[i])
-    		}
-        }
+		if (typeof evts === 'string') {
+			var events = [evts] || ['hashchange'];
+		}
+		else if (Object.prototype.toString.call(evts) === '[object Array]') {
+			var events = evts;
+		}
+		for (var i = 0; i < events.length; i++) {
+			(function(eventName) {
+				var eventCallback = function(e) {
+					var e = e || window.event;
+					var eventHookTime = 0;
+					var timeAfterEvent = function(time) {
+						eventHookTime = eventHookTime + time;
+					};
+					self.on('executing', timeAfterEvent);
+					window.removeEventListener(eventName, eventCallback);
+					setTimeout(function() {
+                        self.trigger('eachEventHook', {
+                            type: 'eachEvent',
+                            event: eventName,
+                            time: eventHookTime,
+                            location: location.href,
+                            name: self.name,
+                            domClass: e.target.className,
+                            domName: e.target.tagName,
+                            domId: e.target.id,
+                            // domEvent: e
+                        });
+						window.addEventListener(eventName, eventCallback, false);
+					}, self.eventTimeout);
+				}
+				window.addEventListener(eventName, eventCallback, false);
+			})(events[i])
+		}
 	};
+
+    WebPerformance.prototype.addSlowEvents = function(evts) {
+        var self = this;
+        if (typeof evts === 'string') {
+            var events = [evts] || ['hashchange'];
+        }
+        else if (Object.prototype.toString.call(evts) === '[object Array]') {
+            var events = evts;
+        }
+        for (var i = 0; i < events.length; i++) {
+            (function(eventName) {
+                var eventCallback = function(e) {
+                    var e = e || window.event;
+                    var eventHookTime = 0;
+                    var timeAfterEvent = function(time) {
+                        eventHookTime = eventHookTime + time;
+                    };
+                    self.on('executing', timeAfterEvent);
+                    window.removeEventListener(eventName, eventCallback);
+                    setTimeout(function() {
+                        if (eventHookTime > self.slowStandard) {
+                            self.trigger('slowEventHook', {
+                                type: 'slowEvent',
+                                event: eventName,
+                                time: eventHookTime,
+                                location: location.href,
+                                name: self.name,
+                                domClass: e.target.className,
+                                domName: e.target.tagName,
+                                domId: e.target.id,
+                                // domEvent: e
+                            });
+                        }
+                        window.addEventListener(eventName, eventCallback, false);
+                    }, self.eventTimeout);
+                }
+                window.addEventListener(eventName, eventCallback, false);
+            })(events[i])
+        }
+    };
 
 
 
@@ -147,8 +170,7 @@
 
 	WebPerformance.prototype.init = function() {
 		var self = this;
-        this.addEachEvents = this.addEvents('each');
-        this.addSlowEvents = this.addEvents('slow');
+
 		function timeout() {
 			if (requestAnimationFrame) {
 				return requestAnimationFrame

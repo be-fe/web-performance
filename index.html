@@ -24,7 +24,7 @@
 
 			eventTimeout: 2000,
 		});
-		webPerformance.addSlowEvents(['click', 'hashchange', 'resize', 'load']); //可能造成页面假死的事件
+		webPerformance.addSlowEvents(['click']); //可能造成页面假死的事件
 		webPerformance.addEachEvents(['hashchange']); //每次事件都计算
 
 		function exec() {
