@@ -10,14 +10,22 @@
 	<script type="text/javascript">
 		var webPerformance = new WebPerformance({
 			name: 'Tester',
-			onEventHook: function(data) {
+			onSlowEventHook: function(data) {
 				console.log(data);
 			},
+
+			onEachEventHook: function(data) {
+				console.log(data);
+			},
+
 			onSlowFunc: function(data) {
 				console.log(data);
-			}
+			},
+
+			eventTimeout: 2000,
 		});
-		webPerformance.addEvents(['click', 'hashchange', 'resize']);
+		webPerformance.addSlowEvents(['click', 'hashchange', 'resize', 'load']); //可能造成页面假死的事件
+		webPerformance.addEachEvents(['hashchange']); //每次事件都计算
 
 		function exec() {
 			for (var i = 0; i < 10000000; i++) {
@@ -25,8 +33,11 @@
 			}
 		}
 
+		exec();
 		window.addEventListener('hashchange', function() {
-			exec();
+			if (location.hash === '#/test') {
+				exec();
+			}
 		})
 	</script>
 </body>
